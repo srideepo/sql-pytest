@@ -16,8 +16,8 @@ load_dotenv(dotenv_path = os.path.join(BASEDIR, f'../config/.env'))
 
 # --// END BOOTSTRAP CONFIGURATION ----------------------------------------------//
 
-@pytest.fixture
-def db_instance(scope="session"):
+@pytest.fixture(scope="session")
+def db_instance():
     """
     Create a DB Instance
     """
@@ -25,8 +25,8 @@ def db_instance(scope="session"):
     yield db
 
 
-@pytest.fixture
-def connection(db_instance, scope="session"):
+@pytest.fixture(scope="session")
+def connection(db_instance):
     """
     Create a Session, close after test session, uses `db_instance` fixture
     """
@@ -35,8 +35,8 @@ def connection(db_instance, scope="session"):
     #connection.rollback()
     connection.close()
 
-@pytest.fixture
-def cursor(connection, scope="session"):
+@pytest.fixture(scope="session")
+def cursor(connection):
     """
     Create a Session, close after test session, uses `db_instance` fixture
     """
@@ -45,8 +45,8 @@ def cursor(connection, scope="session"):
     cursor.rollback()
     cursor.close()
 
-@pytest.fixture
-def db_instance_empty(db_instance, cursor, scope="function"):
+@pytest.fixture(scope="function")
+def db_instance_empty(db_instance, cursor):
     """
     Create an Empty DB Instance, uses `db_instance` and `session` fixtures
     """

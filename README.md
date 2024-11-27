@@ -8,7 +8,8 @@ This project explains how to use Pytest Add Options and pass CLI Arguments to yo
 
 # Requirements
 * Python (3.11+)
-
+* mssql db already deployed  
+  
 Please install the dependencies via the `requirements.txt` file using 
 ```commandline
 pip install -r requirements.txt

@@ -18,21 +18,7 @@ class DB:
     def __init__(self, conn_str:str):
         # Create DB connection
         self.connection = pyodbc.connect(conn_str)
-
         cursor = self.connection.cursor()
-
-        # Create DB objects (if needs priming)
-        cursor.execute(textwrap.dedent('''
-            CREATE TABLE TestTable(ID int, Name varchar(25))
-        '''))
-        cursor.execute(textwrap.dedent('''
-            CREATE FUNCTION udf_TestFn ()
-            RETURNS TABLE
-            AS
-            RETURN(
-                SELECT DISTINCT * FROM TestTable
-            )
-        ''')) 
 
     def delete_all_rows(self, cursor) -> None:
         """
@@ -46,13 +32,14 @@ class DB:
         """
         logger.info("Deleting all data from DB")
         stmt = textwrap.dedent('''
-            DELETE FROM TestTable
+            --DELETE FROM TestTable
+            SELECT 1
         ''')        
         cursor.execute(stmt) 
 
-    def insert_rows(self, cursor) -> None:
+    def execute_sql(self, cursor, stmt) -> list:
         """
-        Delete all data from the database
+        Execute sql
 
         Args:
             cursor (pyodbc.cursor): The connection cursor
@@ -60,24 +47,10 @@ class DB:
         Returns:
             None
         """
-        logger.info("Insert rows into DB")
-        stmt = textwrap.dedent('''
-            INSERT INTO TestTable (ID, Name)
-            SELECT 1, 'Name 1' UNION
-            SELECT 2, 'Name 2'
-        ''')         
-        cursor.execute(stmt) 
-
-
-    def insert_rows_as_sql(self, cursor, stmt) -> None:
-        """
-        Insert data into database
-
-        Args:
-            cursor (pyodbc.cursor): The connection cursor
-
-        Returns:
-            None
-        """
-        logger.info("Inserting data into DB")
-        cursor.execute(stmt) 
+        logger.info("Executing sql")
+        cursor.execute(stmt)
+        try:
+            rs = cursor.fetchall()
+            return rs
+        except:
+            return None
